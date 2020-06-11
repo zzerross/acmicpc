@@ -20,6 +20,9 @@ int main() {
             M[m+2][i][j] = 0;
 
             for (x = 0; x < X[m]; x++)
+                /*
+                 * i x j
+                 */
                 M[m+2][i][j] += M[m][i][x] * M[m+1][x][j];
 
             printf("%d ", M[m+2][i][j]);

@@ -1,6 +1,4 @@
 CFLAGS := -Wall
-# CFLAGS += -D_lv_=3
-# CFLAGS += -D_tc_=1
 TARGET := main
 IN := in0
 
