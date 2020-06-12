@@ -8,7 +8,7 @@ typedef unsigned int u32;
 
 template <typename T, int S>
 void msrt(T* a, int l, int h) {
-    T b[S];
+    static T b[S];
 
     if (l >= h)
         return;
