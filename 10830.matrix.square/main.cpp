@@ -1,36 +1,93 @@
 #include <stdio.h>
 
-int N, M, A[5][5], B[2][5][5], m;
+typedef long long i64;
 
-int main() {
-    scanf("%d %d", &N, &M);
+struct Matrix {
+    int size;
+    i64 buf[5][5];
 
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            scanf("%d", &A[i][j]);
-
-            B[0][i][j] = A[i][j];
+    Matrix(int s, bool i = false): size(s) {
+        if (i) {
+            for (int i = 0; i < size; i++)
+                for (int j = 0; j < size; j++)
+                    buf[i][j] = i == j;
         }
     }
 
-    for (m = 1; m < M; m++) {
-        for (int i = 0; i < N; i++) {
-            for ( int j = 0; j < N; j++) {
-                B[m%2][i][j] = 0;
+    inline i64 mod(const i64& x) {
+        return x % 1000UL;
+    }
 
-                for (int x = 0; x < N; x++)
-                    B[m%2][i][j] =
-                        (B[m%2][i][j] + (B[(m-1)%2][i][x] * A[x][j]) % 1000) % 1000;
+    Matrix& read() {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                scanf("%lld", &buf[i][j]);
+
+                buf[i][j] = mod(buf[i][j]);
             }
         }
+
+        return *this;
     }
 
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++)
-            printf("%d ", B[(m-1)%2][i][j]);
+    Matrix operator*(const Matrix& o) {
+        Matrix r(size);
 
-        printf("\n");
+        for (int i = 0; i < size; i++) {
+            for ( int j = 0; j < size; j++) {
+                r.buf[i][j] = 0;
+
+                for (int x = 0; x < size; x++)
+                    r.buf[i][j] = mod(r.buf[i][j] + mod(buf[i][x] * o.buf[x][j]));
+            }
+        }
+
+        return r;
     }
+
+    Matrix pow(i64 n) {
+#if 0 // recursive
+        if (n == 1)
+            return *this;
+
+        if (n % 2)
+            return *this * pow(n - 1);
+
+        Matrix p = pow(n / 2);
+
+        return p * p;
+#else
+        Matrix r(size, true);
+
+        for (; 0 < n; n /= 2) {
+            if (n % 2)
+                r = r * *this;
+
+            *this = *this * *this;
+        }
+
+        return r;
+#endif
+    }
+
+    void dump() {
+        for (int i = 0; i < size; i++) {
+            for ( int j = 0; j < size; j++)
+                printf("%lld ", buf[i][j]);
+
+            printf("\n");
+        }
+    }
+};
+
+int main() {
+    i64 N, M;
+
+    scanf("%lld %lld", &N, &M);
+
+    Matrix m(N);
+
+    m.read().pow(M).dump();
 
     return 0;
 }

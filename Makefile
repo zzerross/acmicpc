@@ -1,13 +1,20 @@
-# in=smp.txt
-in=in0
+TARGET := $(MAKECMDGOALS)
+ifeq ($(TARGET),)
+TARGET := main
+endif
 
-all: main
+CFLAGS := -Wall
 
-main: force
-	g++ -o $@ $@.cpp 2>&1 | tee $@.txt
-	./$@ 2>&1 | tee $@.txt
+IN := in0
+
+$(TARGET): FORCE
+	g++ $(CFLAGS) -o $@ $(TARGET).cpp
+	./$(TARGET) < $(IN) 2>&1 | tee $(TARGET).txt
+
+.PHONY: FORCE
 
 clean:
-	find ! -name Makefile ! -name *.cpp ! -name *.hpp | xargs rm -rf
+	rm $(TARGET) $(TARGET).txt
 
-force:
+reset:
+	find ! -name Makefile | xargs rm -rf
