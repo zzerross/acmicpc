@@ -1,15 +1,11 @@
-TARGET := $(MAKECMDGOALS)
-ifeq ($(TARGET),)
 TARGET := main
-endif
-
 CFLAGS := -Wall
 
 IN := in0
 
 $(TARGET): FORCE
 	g++ $(CFLAGS) -o $@ $(TARGET).cpp
-	time ./$(TARGET) < $(IN) 2>&1 | tee $(TARGET).txt
+	./$(TARGET) < $(IN) 2>&1 | tee $(TARGET).txt
 
 .PHONY: FORCE
 
