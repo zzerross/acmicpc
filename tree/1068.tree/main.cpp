@@ -1,19 +1,11 @@
 #include <stdio.h>
 
-#ifdef use_pr
-#define _pr(fmt, ...) printf(fmt, ##__VA_ARGS__)
-#else
-#define _pr(fmt, ...)
-#endif
-
 #define S 50
 
-int M, D, R = 0, P[S], C[S][S], N[S] = { 0, };
+int M, D, R, P[S], C[S][S+5], N[S] = { 0, };
 
 int dfs(int i) {
     int r = 0;
-
-    _pr("> i=%2d\n", i);
 
     if (P[i] != -2) {
         if (N[i])
@@ -24,31 +16,19 @@ int dfs(int i) {
             r = 1;
     }
 
-    _pr("< i=%2d r=%2d\n", i, r);
-
     return r;
 }
 
 int main() {
     scanf("%d", &M);
 
-    for (int p, i = 0; i < M; P[i] = p, i++) {
-        scanf("%d", &p);
+    for (int i = 0; i < M; i++) {
+        scanf("%d", &P[i]);
 
-        if (p == -1)
+        C[P[i]][N[P[i]]++] = i;
+
+        if (P[i] == -1)
             R = i;
-
-        _pr(">> P[%d]=%d R=%d\n", i, p, R);
-
-        C[p][N[p]++] = i;
-
-        _pr("   P[%d]=%d R=%d\n", i, p, R);
-    }
-
-    if (P[R] != -1) {
-        int* p = NULL;
-
-        *p = 0xdeaddead;
     }
 
     scanf("%d", &D);
