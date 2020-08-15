@@ -7,8 +7,8 @@ int min(const int& i, const int& j) {
 }
 
 void msrt(int* a, int n) { 
-    for (register int s = 1; s < n; s *= 2) {
-        for (register int p = 0; p < n;) {
+    for (int s = 1; s < n; s *= 2) {
+        for (int p = 0; p < n;) {
             int b[S], i, j;
             int l = p;
             int m = min(p += s, n) - 1;
