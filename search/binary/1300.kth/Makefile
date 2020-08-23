@@ -1,5 +1,5 @@
 CFLAGS := -Wall
-# CFLAGS := -Duse_pr
+CFLAGS := -Duse_pr
 
 IN := in0
 
@@ -14,7 +14,8 @@ OUTS += $(2) $(2).txt
 )
 endef
 
-$(call build,,main,< $(IN))
+$(call build,stl,main,< $(IN))
+$(call build,,stl,< $(IN))
 
 clean:
 	rm -rf $(OUTS)
