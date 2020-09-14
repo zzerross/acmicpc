@@ -1,8 +1,8 @@
 CFLAGS := -Wall
 # CFLAGS := -Duse_pr
 
-# IN := in0
-IN := smp.txt
+IN := in0
+# IN := smp.txt
 
 define build
 $(eval 
@@ -15,6 +15,7 @@ OUTS += $(2) $(2).txt
 )
 endef
 
+$(call build,main,bfrc,< $(IN))
 $(call build,,main,< $(IN))
 
 clean:
