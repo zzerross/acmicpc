@@ -1,0 +1,28 @@
+5 17
+result:
+2
+
+4 6
+result:
+4 3 6
+  1 1
+
+1 32
+result:
+0
+
+10 18
+result:
+1
+
+1 16
+result:
+0
+
+100000  99999 
+result:
+1
+
+0 100000
+result:
+6
