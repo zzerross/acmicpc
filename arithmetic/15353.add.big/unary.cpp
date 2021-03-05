@@ -1,11 +1,5 @@
 #include <stdio.h>
 
-#ifdef use_pr
-#define _pr(fmt, ...) printf(fmt, ##__VA_ARGS__)
-#else
-#define _pr(fmt, ...)
-#endif
-
 template <size_t S>
 struct Integer {
     char buf[S+1];
@@ -21,18 +15,13 @@ struct Integer {
         return *this;
     }
 
-    Integer& add(Integer& a, Integer& b) {
-        Integer& u = a.tail < b.tail ? b : a;
-        Integer& v = a.tail < b.tail ? a : b;
-
-        tail = u.tail;
-
-        for (int i = u.tail, j = v.tail; 0 <= i; i--, j--) {
-            ary[i] += u.ary[i] + v.ary[j];
+    Integer& operator+=(Integer& o) {
+        for (int i = tail, j = o.tail; 0 <= i; i--, j--) {
+            ary[i] += o.ary[j];
 
             if (10 <= ary[i]) {
                 ary[i] -= 10;
-                ary[i-1] = 1;
+                ary[i-1]++;
             }
         }
 
@@ -51,7 +40,7 @@ struct Integer {
 int main() {
     Integer<100000> a, b, c;
 
-    c.add(a.read(), b.read()).dump("\n");
+    (a.read().tail < b.read().tail ? b += a : a += b).dump("\n");
 
     return 0;
 }
