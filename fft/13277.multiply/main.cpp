@@ -166,6 +166,7 @@ size_t mdigits(size_t a, size_t b) {
     return max(d, 1UL);
 }
 
+#define MAXN 131072
 template <typename T, int S = 131072>
 struct Vector {
     T buf[S];
@@ -196,13 +197,11 @@ int main() {
     _d0("m=%d\n", m);
 #endif
 
-#define MAXN 131072
-    i32 R[MAXN];
-
     Vector<i32> v0(n);
     Vector<i32> v1(n);
     Vector<i32> v2(n);
     Vector<i32> t(n);
+    Vector<i32> r(n);
 
     v0.mod(A, p0);
     fft(n, v0.buf, p0, pr0, false);
@@ -247,7 +246,7 @@ int main() {
             i32 v1 = (i64)(r1 - v0 + p1) * iu1p1 % p1;
             i32 v2 = (i64)(r2 - ((i64)v1 * p0 + v0) % p2 + p2) * iu2p2 % p2;
             i32 d = (((i64)v2 * p1 + v1) % b * p0 + v0) % b;
-            R[i] = d;
+            r.buf[i] = d;
             r0 -= d; if (r0 < 0) r0 += p0; c0 = (i64)r0 * ibp0 % p0;
             r1 -= d; if (r1 < 0) r1 += p1; c1 = (i64)r1 * ibp1 % p1;
             r2 -= d; if (r2 < 0) r2 += p2; c2 = (i64)r2 * ibp2 % p2;
@@ -255,12 +254,12 @@ int main() {
     }
 
     int iend = n;
-    for (; 0 < iend && R[iend - 1] == 0; --iend);
+    for (; 0 < iend && r.buf[iend - 1] == 0; --iend);
 
-    printf("%lld", R[iend - 1]);
+    printf("%lld", r.buf[iend - 1]);
 
     for (int i = iend - 2; i >= 0; --i)
-        printf("%09lld", R[i]);
+        printf("%09lld", r.buf[i]);
 
     printf("\n");
 
