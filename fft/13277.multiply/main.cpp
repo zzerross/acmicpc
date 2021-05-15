@@ -73,10 +73,7 @@ struct Integer {
     }
 };
 
-Integer<300001> gA, gB;
-
-i32* A = gA.buf;
-i32* B = gB.buf;
+Integer<300001> A, B;
 
 /* p0 < p1, b < p0, p1, p2 */
 const i32 p0 = 1070727169, pr0 = 11;
@@ -172,44 +169,37 @@ struct Vector {
             }
         }
     }
-
 };
 
 int main() {
     int dgtl = 9;
 
-    int n = ceil2pow(gA.read() + gB.read());
-    _d0("ceil2pow(%lu, %lu)=%d\n", gA.len, gB.len, n);
-
-#if DEBUG == 1
-    int m = mdigits(gA.len, gB.len);
-    _d0("m=%d\n", m);
-#endif
+    int n = ceil2pow(A.read() + B.read());
 
     Vector<i32> v0(n), v1(n), v2(n), t(n), r(n);
 
-    v0.mod(A, p0);
+    v0.mod(A.buf, p0);
     v0.fft(p0, pr0, false);
 
-    t.mod(B, p0);
+    t.mod(B.buf, p0);
     t.fft(p0, pr0, false);
 
     v0.mulmod(t.buf, p0);
     v0.fft(p0, pr0, true);
 
-    v1.mod(A, p1);
+    v1.mod(A.buf, p1);
     v1.fft(p1, pr1, false);
 
-    t.mod(B, p1);
+    t.mod(B.buf, p1);
     t.fft(p1, pr1, false);
 
     v1.mulmod(t.buf, p1);
     v1.fft(p1, pr1, true);
 
-    v2.mod(A, p2);
+    v2.mod(A.buf, p2);
     v2.fft(p2, pr2, false);
 
-    t.mod(B, p2);
+    t.mod(B.buf, p2);
     t.fft(p2, pr2, false);
 
     v2.mulmod(t.buf, p2);
