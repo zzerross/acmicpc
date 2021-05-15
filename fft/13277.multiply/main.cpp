@@ -105,53 +105,6 @@ i32 invmod(i32 a, i32 p) {
     return powmod(a, p - 2, p);
 }
 
-void vecmod(int n, i32 *AT, const i32 *AF, i32 m) {
-    for (int i = 0; i < n; ++i) {
-        AT[i] = AF[i] % m;
-    }
-}
-
-void vecimulmod(int n, i32 *AT, const i32 *AF, i32 m) {
-    for (int i = 0; i < n; ++i) {
-        AT[i] = (i64)AT[i] * AF[i] % m;
-    }
-}
-
-void fft(int n, i32 *A, i32 m, i32 pr, bool inv) {
-    i32 w = powmod(pr, m / n, m);
-    if (inv) { w = invmod(w, m); }
-
-    for (int i = 1, j = 0; i < n; ++i) {
-        int k = n >> 1;
-        for ( ; j >= k; k >>= 1) {
-            j -= k;
-        }
-        j += k;
-        if (i > j) {
-            _swap(A[i], A[j]);
-        }
-    }
-
-    for (int ts = 1; ts < n; ts <<= 1) {
-        i32 xstep = powmod(w, (n >> 1) / ts, m);
-        for (int i = 0; i < n; i += ts) {
-            i32 x = 1;
-            for ( ; !(i & ts); ++i, x = (i64)x * xstep % m) {
-                i32 diff = (i64)A[i | ts] * x % m;
-                if ((A[i | ts] = A[i] - diff) < 0) A[i | ts] += m;
-                if ((A[i] += diff) >= m) A[i] -= m;
-            }
-        }
-    }
-
-    if (inv) {
-        i32 invn = invmod(n, m);
-        for (int i = 0; i < n; ++i) {
-            A[i] = (i64) A[i] * invn % m;
-        }
-    }
-}
-
 template <typename T>
 T max(T a, T b) {
     return a < b ? b : a;
@@ -184,6 +137,42 @@ struct Vector {
         for (int i = 0; i < n; i++)
             buf[i] = buf[i] * a[i] % m;
     }
+
+    void fft(i32 m, i32 pr, bool inv) {
+        i32 w = powmod(pr, m / n, m);
+        if (inv) { w = invmod(w, m); }
+
+        for (int i = 1, j = 0; i < n; ++i) {
+            int k = n >> 1;
+            for ( ; j >= k; k >>= 1) {
+                j -= k;
+            }
+            j += k;
+            if (i > j) {
+                _swap(buf[i], buf[j]);
+            }
+        }
+
+        for (int ts = 1; ts < n; ts <<= 1) {
+            i32 xstep = powmod(w, (n >> 1) / ts, m);
+            for (int i = 0; i < n; i += ts) {
+                i32 x = 1;
+                for ( ; !(i & ts); ++i, x = (i64)x * xstep % m) {
+                    i32 diff = (i64)buf[i | ts] * x % m;
+                    if ((buf[i | ts] = buf[i] - diff) < 0) buf[i | ts] += m;
+                    if ((buf[i] += diff) >= m) buf[i] -= m;
+                }
+            }
+        }
+
+        if (inv) {
+            i32 invn = invmod(n, m);
+            for (int i = 0; i < n; ++i) {
+                buf[i] = (i64) buf[i] * invn % m;
+            }
+        }
+    }
+
 };
 
 int main() {
@@ -200,31 +189,31 @@ int main() {
     Vector<i32> v0(n), v1(n), v2(n), t(n), r(n);
 
     v0.mod(A, p0);
-    fft(n, v0.buf, p0, pr0, false);
+    v0.fft(p0, pr0, false);
 
     t.mod(B, p0);
-    fft(n, t.buf, p0, pr0, false);
+    t.fft(p0, pr0, false);
 
     v0.mulmod(t.buf, p0);
-    fft(n, v0.buf, p0, pr0, true);
+    v0.fft(p0, pr0, true);
 
     v1.mod(A, p1);
-    fft(n, v1.buf, p1, pr1, false);
+    v1.fft(p1, pr1, false);
 
     t.mod(B, p1);
-    fft(n, t.buf, p1, pr1, false);
+    t.fft(p1, pr1, false);
 
     v1.mulmod(t.buf, p1);
-    fft(n, v1.buf, p1, pr1, true);
+    v1.fft(p1, pr1, true);
 
     v2.mod(A, p2);
-    fft(n, v2.buf, p2, pr2, false);
+    v2.fft(p2, pr2, false);
 
     t.mod(B, p2);
-    fft(n, t.buf, p2, pr2, false);
+    t.fft(p2, pr2, false);
 
     v2.mulmod(t.buf, p2);
-    fft(n, v2.buf, p2, pr2, true);
+    v2.fft(p2, pr2, true);
 
     /* garner */ {
         const i32 b = 1000000000;
