@@ -197,11 +197,11 @@ int main() {
 #endif
 
 #define MAXN 131072
-    i32 C1[MAXN];
     i32 C2[MAXN];
     i32 R[MAXN];
 
     Vector<i32> v0(n);
+    Vector<i32> v1(n);
     Vector<i32> t(n);
 
     v0.mod(A, p0);
@@ -213,19 +213,21 @@ int main() {
     v0.mulmod(t.buf, p0);
     fft(n, v0.buf, p0, pr0, true);
 
-    vecmod(n, C1, A, p1);
-    fft(n, C1, p1, pr1, false);
+    v1.mod(A, p1);
+    fft(n, v1.buf, p1, pr1, false);
 
     t.mod(B, p1);
     fft(n, t.buf, p1, pr1, false);
-    vecimulmod(n, C1, t.buf, p1);
-    fft(n, C1, p1, pr1, true);
+
+    v1.mulmod(t.buf, p1);
+    fft(n, v1.buf, p1, pr1, true);
 
     vecmod(n, C2, A, p2);
     fft(n, C2, p2, pr2, false);
 
     t.mod(B, p2);
     fft(n, t.buf, p2, pr2, false);
+
     vecimulmod(n, C2, t.buf, p2);
     fft(n, C2, p2, pr2, true);
 
@@ -239,7 +241,7 @@ int main() {
         const i32 ibp2 = invmod(b, p2);
         for (int i = 0; i < n; ++i) {
             i32 r0 = v0.buf[i] + c0; if (r0 > p0) r0 -= p0;
-            i32 r1 = C1[i] + c1; if (r1 > p1) r1 -= p1;
+            i32 r1 = v1.buf[i] + c1; if (r1 > p1) r1 -= p1;
             i32 r2 = C2[i] + c2; if (r2 > p2) r2 -= p2;
             i32 v0 = r0;
             i32 v1 = (i64)(r1 - v0 + p1) * iu1p1 % p1;
