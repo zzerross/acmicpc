@@ -1,8 +1,12 @@
 // sait2000's https://www.acmicpc.net/source/8991111
 
-#include <cstdlib>
-#include <iostream>
-#include <iomanip>
+#include <stdio.h>
+
+#if DEBUG == 1
+#define _d0(fmt, ...) printf(fmt, ##__VA_ARGS__)
+#else
+#define _d0(fmt, ...)
+#endif
 
 using namespace std;
 
@@ -10,46 +14,61 @@ using namespace std;
 #define MDGTL 9
 #define MAXN 131072
 
-typedef int i32;
+typedef long long i32;
 typedef long long i64;
-
-#if DEBUG == 1
-#define _pr(fmt, ...) printf(fmt, ##__VA_ARGS__)
-#else
-#define _pr(fmt, ...)
-#endif
 
 template <typename T>
 void _pa(const char* s, T* a, size_t n) {
-    _pr("%8s: ", s ? s : "");
+    _d0("%8s: n=%lu, ", s ? s : "", n);
 
     for (int i = 0; i < n; i++)
-        _pr("%d ", a[i]);
+        _d0("%d ", a[i]);
 
-    _pr("\n");
+    _d0("\n");
+}
+
+template <typename T>
+void _swap(T& a, T& b){
+    T t = a;
+    a = b;
+    b = t;
+}
+
+int _max(int a, int b) {
+    return a < b ? b : a;
+}
+
+int _strlen(char* s) {
+    int n = 0;
+
+    for (; s[n]; n++);
+
+    return n;
+}
+
+int _atoi(char* s) {
+    int n = 0;
+
+    while (*s)
+        (n *= 10) += *s++ - '0';
+
+    return n;
 }
 
 template <int S, int D = 9>
 struct Integer {
-    int buf[S];
+    i32 buf[S];
     size_t len;
 
     size_t read() {
         char s[S];
         scanf("%s", s);
 
-        int n = 0;
-        for (; s[n]; n++);
+        for (int i = _strlen(s); 0 < i;) {
+            s[i] = '\0';
 
-        int len = 0;
-        for (int i = n; 0 < i; ++len, i -= D) {
-            if (i < n)
-                s[i] = '\0';
-
-            buf[len] = atoi(s + max(i - D, 0));
+            buf[len++] = _atoi(s + _max(i -= D, 0));
         }
-
-        _pa(__func__, buf, len);
 
         return len;
     }
@@ -72,12 +91,11 @@ const i32 p2 = 1073479681, pr2 = 11;
 
 int ceil2pow(int a){
     --a;
-    a |= a >> 1;
-    a |= a >> 2;
-    a |= a >> 4;
-    a |= a >> 8;
-    a |= a >> 16;
-    return a + 1;
+
+    for (int i = 1; i <= 16; i *= 2)
+        a |= a >> i;
+
+    return ++a;
 }
 
 i32 powmod(i64 a, i64 b, i32 m) {
@@ -116,7 +134,7 @@ void fft(int n, i32 *A, i32 m, i32 pr, bool inv) {
         }
         j += k;
         if (i > j) {
-            swap(A[i], A[j]);
+            _swap(A[i], A[j]);
         }
     }
 
@@ -140,10 +158,30 @@ void fft(int n, i32 *A, i32 m, i32 pr, bool inv) {
     }
 }
 
+template <typename T>
+T max(T a, T b) {
+    return a < b ? b : a;
+}
+
+size_t mdigits(size_t a, size_t b) {
+    size_t d = 0;
+
+    d += (a == 1 ? 0 : a);
+    d += (b == 1 ? 0 : b);
+
+    return max(d, 1UL);
+}
+
 int main() {
     int dgtl = 9;
 
     int n = ceil2pow(gA.read() + gB.read());
+    _d0("ceil2pow(%lu, %lu)=%d\n", gA.len, gB.len, n);
+
+#if DEBUG == 1
+    int m = mdigits(gA.len, gB.len);
+    _d0("m=%d\n", m);
+#endif
 
     vecmod(n, C0, A, p0);
     fft(n, C0, p0, pr0, false);
@@ -189,29 +227,15 @@ int main() {
         }
     }
 
-    /* print */ {
-#if 0
-        int iend = n;
-        for (; 0 < iend && R[iend - 1] == 0; --iend);
+    int iend = n;
+    for (; 0 < iend && R[iend - 1] == 0; --iend);
 
-        cout << R[iend - 1];
+    printf("%lld", R[iend - 1]);
 
-        for (int i = iend - 2; i >= 0; --i)
-            cout << setfill('0') << setw(dgtl) << R[i];
+    for (int i = iend - 2; i >= 0; --i)
+        printf("%09lld", R[i]);
 
-        cout << endl;
-#else
-        int iend = n;
-        for (; 0 < iend && R[iend - 1] == 0; --iend);
-
-        printf("%d", R[iend - 1]);
-
-        for (int i = iend - 2; i >= 0; --i)
-            cout << setfill('0') << setw(dgtl) << R[i];
-
-        cout << endl;
-#endif
-    }
+    printf("\n");
 
     return 0;
 }
