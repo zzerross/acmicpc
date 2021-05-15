@@ -172,8 +172,6 @@ struct Vector {
 };
 
 int main() {
-    int dgtl = 9;
-
     int n = ceil2pow(A.read() + B.read());
 
     Vector<i32> v0(n), v1(n), v2(n), t(n), r(n);
