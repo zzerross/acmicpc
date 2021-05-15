@@ -197,11 +197,11 @@ int main() {
 #endif
 
 #define MAXN 131072
-    i32 C2[MAXN];
     i32 R[MAXN];
 
     Vector<i32> v0(n);
     Vector<i32> v1(n);
+    Vector<i32> v2(n);
     Vector<i32> t(n);
 
     v0.mod(A, p0);
@@ -222,14 +222,14 @@ int main() {
     v1.mulmod(t.buf, p1);
     fft(n, v1.buf, p1, pr1, true);
 
-    vecmod(n, C2, A, p2);
-    fft(n, C2, p2, pr2, false);
+    v2.mod(A, p2);
+    fft(n, v2.buf, p2, pr2, false);
 
     t.mod(B, p2);
     fft(n, t.buf, p2, pr2, false);
 
-    vecimulmod(n, C2, t.buf, p2);
-    fft(n, C2, p2, pr2, true);
+    v2.mulmod(t.buf, p2);
+    fft(n, v2.buf, p2, pr2, true);
 
     /* garner */ {
         const i32 b = 1000000000;
@@ -242,7 +242,7 @@ int main() {
         for (int i = 0; i < n; ++i) {
             i32 r0 = v0.buf[i] + c0; if (r0 > p0) r0 -= p0;
             i32 r1 = v1.buf[i] + c1; if (r1 > p1) r1 -= p1;
-            i32 r2 = C2[i] + c2; if (r2 > p2) r2 -= p2;
+            i32 r2 = v2.buf[i] + c2; if (r2 > p2) r2 -= p2;
             i32 v0 = r0;
             i32 v1 = (i64)(r1 - v0 + p1) * iu1p1 % p1;
             i32 v2 = (i64)(r2 - ((i64)v1 * p0 + v0) % p2 + p2) * iu2p2 % p2;
