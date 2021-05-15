@@ -169,13 +169,20 @@ size_t mdigits(size_t a, size_t b) {
 template <typename T, int S = 131072>
 struct Vector {
     T buf[S];
+    int n;
 
-    void mod(int n, const i32 *AF, i32 m) {
-        for (int i = 0; i < n; ++i) {
-            buf[i] = AF[i] % m;
-        }
+    Vector(int n): n(n) {
     }
 
+    void mod(const T *a, T m) {
+        for (int i = 0; i < n; i++)
+            buf[i] = a[i] % m;
+    }
+
+    void mulmod(const T* a, T m) {
+        for (int i = 0; i < n; i++)
+            buf[i] = buf[i] * a[i] % m;
+    }
 };
 
 int main() {
@@ -191,17 +198,20 @@ int main() {
 
 #define MAXN 131072
     i32 T[MAXN];
-    i32 C0[MAXN];
     i32 C1[MAXN];
     i32 C2[MAXN];
     i32 R[MAXN];
 
-    vecmod(n, C0, A, p0);
-    fft(n, C0, p0, pr0, false);
+    Vector<i32> v0(n);
+
+    v0.mod(A, p0);
+    fft(n, v0.buf, p0, pr0, false);
+
     vecmod(n, T, B, p0);
     fft(n, T, p0, pr0, false);
-    vecimulmod(n, C0, T, p0);
-    fft(n, C0, p0, pr0, true);
+
+    v0.mulmod(T, p0);
+    fft(n, v0.buf, p0, pr0, true);
 
     vecmod(n, C1, A, p1);
     fft(n, C1, p1, pr1, false);
@@ -226,7 +236,7 @@ int main() {
         const i32 ibp1 = invmod(b, p1);
         const i32 ibp2 = invmod(b, p2);
         for (int i = 0; i < n; ++i) {
-            i32 r0 = C0[i] + c0; if (r0 > p0) r0 -= p0;
+            i32 r0 = v0.buf[i] + c0; if (r0 > p0) r0 -= p0;
             i32 r1 = C1[i] + c1; if (r1 > p1) r1 -= p1;
             i32 r2 = C2[i] + c2; if (r2 > p2) r2 -= p2;
             i32 v0 = r0;
