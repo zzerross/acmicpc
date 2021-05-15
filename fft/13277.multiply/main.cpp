@@ -12,7 +12,6 @@ using namespace std;
 
 #define MAXL 300000
 #define MDGTL 9
-#define MAXN 131072
 
 typedef long long i32;
 typedef long long i64;
@@ -78,11 +77,6 @@ Integer<300001> gA, gB;
 
 i32* A = gA.buf;
 i32* B = gB.buf;
-i32 T[MAXN];
-i32 C0[MAXN];
-i32 C1[MAXN];
-i32 C2[MAXN];
-i32 R[MAXN];
 
 /* p0 < p1, b < p0, p1, p2 */
 const i32 p0 = 1070727169, pr0 = 11;
@@ -172,6 +166,18 @@ size_t mdigits(size_t a, size_t b) {
     return max(d, 1UL);
 }
 
+template <typename T, int S = 131072>
+struct Vector {
+    T buf[S];
+
+    void mod(int n, const i32 *AF, i32 m) {
+        for (int i = 0; i < n; ++i) {
+            buf[i] = AF[i] % m;
+        }
+    }
+
+};
+
 int main() {
     int dgtl = 9;
 
@@ -182,6 +188,13 @@ int main() {
     int m = mdigits(gA.len, gB.len);
     _d0("m=%d\n", m);
 #endif
+
+#define MAXN 131072
+    i32 T[MAXN];
+    i32 C0[MAXN];
+    i32 C1[MAXN];
+    i32 C2[MAXN];
+    i32 R[MAXN];
 
     vecmod(n, C0, A, p0);
     fft(n, C0, p0, pr0, false);
