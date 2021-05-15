@@ -197,34 +197,36 @@ int main() {
 #endif
 
 #define MAXN 131072
-    i32 T[MAXN];
     i32 C1[MAXN];
     i32 C2[MAXN];
     i32 R[MAXN];
 
     Vector<i32> v0(n);
+    Vector<i32> t(n);
 
     v0.mod(A, p0);
     fft(n, v0.buf, p0, pr0, false);
 
-    vecmod(n, T, B, p0);
-    fft(n, T, p0, pr0, false);
+    t.mod(B, p0);
+    fft(n, t.buf, p0, pr0, false);
 
-    v0.mulmod(T, p0);
+    v0.mulmod(t.buf, p0);
     fft(n, v0.buf, p0, pr0, true);
 
     vecmod(n, C1, A, p1);
     fft(n, C1, p1, pr1, false);
-    vecmod(n, T, B, p1);
-    fft(n, T, p1, pr1, false);
-    vecimulmod(n, C1, T, p1);
+
+    t.mod(B, p1);
+    fft(n, t.buf, p1, pr1, false);
+    vecimulmod(n, C1, t.buf, p1);
     fft(n, C1, p1, pr1, true);
 
     vecmod(n, C2, A, p2);
     fft(n, C2, p2, pr2, false);
-    vecmod(n, T, B, p2);
-    fft(n, T, p2, pr2, false);
-    vecimulmod(n, C2, T, p2);
+
+    t.mod(B, p2);
+    fft(n, t.buf, p2, pr2, false);
+    vecimulmod(n, C2, t.buf, p2);
     fft(n, C2, p2, pr2, true);
 
     /* garner */ {
