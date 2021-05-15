@@ -197,11 +197,7 @@ int main() {
     _d0("m=%d\n", m);
 #endif
 
-    Vector<i32> v0(n);
-    Vector<i32> v1(n);
-    Vector<i32> v2(n);
-    Vector<i32> t(n);
-    Vector<i32> r(n);
+    Vector<i32> v0(n), v1(n), v2(n), t(n), r(n);
 
     v0.mod(A, p0);
     fft(n, v0.buf, p0, pr0, false);
