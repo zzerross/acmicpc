@@ -103,7 +103,6 @@ size_t mdigits(size_t a, size_t b) {
     return max(d, 1UL);
 }
 
-#define MAXN 131072
 template <typename T, int S = 131072>
 struct Vector {
     T buf[S];
@@ -122,16 +121,20 @@ struct Vector {
             buf[i] = buf[i] * a[i] % m;
     }
 
-    i32 invmod(i32 a, i32 p) {
+    static T invmod(T a, T p) {
         return powmod(a, p - 2, p);
     }
 
-    i32 powmod(i64 a, i64 b, i32 m) {
-        i64 r = 1;
+    static T powmod(T a, T b, T m) {
+        T r = 1;
+
         for ( ; b; b >>= 1) {
-            if (b & 1) r = r * a % m;
+            if (b & 1)
+                r = r * a % m;
+
             a = a * a % m;
         }
+
         return r;
     }
 
@@ -207,11 +210,11 @@ int main() {
     /* garner */ {
         const i32 b = 1000000000;
         i32 c0 = 0, c1 = 0, c2 = 0;
-        const i32 iu1p1 = invmod(p0, p1);
-        const i32 iu2p2 = invmod((i64)p0 * p1 % p2, p2);
-        const i32 ibp0 = invmod(b, p0);
-        const i32 ibp1 = invmod(b, p1);
-        const i32 ibp2 = invmod(b, p2);
+        const i32 iu1p1 = Vector<i32>::invmod(p0, p1);
+        const i32 iu2p2 = Vector<i32>::invmod((i64)p0 * p1 % p2, p2);
+        const i32 ibp0 = Vector<i32>::invmod(b, p0);
+        const i32 ibp1 = Vector<i32>::invmod(b, p1);
+        const i32 ibp2 = Vector<i32>::invmod(b, p2);
         for (int i = 0; i < n; ++i) {
             i32 r0 = v0.buf[i] + c0; if (r0 > p0) r0 -= p0;
             i32 r1 = v1.buf[i] + c1; if (r1 > p1) r1 -= p1;
