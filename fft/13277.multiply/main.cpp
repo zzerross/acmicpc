@@ -89,19 +89,6 @@ int ceil2pow(int a){
     return ++a;
 }
 
-i32 powmod(i64 a, i64 b, i32 m) {
-    i64 r = 1;
-    for ( ; b; b >>= 1) {
-        if (b & 1) r = r * a % m;
-        a = a * a % m;
-    }
-    return r;
-}
-
-i32 invmod(i32 a, i32 p) {
-    return powmod(a, p - 2, p);
-}
-
 template <typename T>
 T max(T a, T b) {
     return a < b ? b : a;
@@ -135,9 +122,23 @@ struct Vector {
             buf[i] = buf[i] * a[i] % m;
     }
 
+    i32 invmod(i32 a, i32 p) {
+        return powmod(a, p - 2, p);
+    }
+
+    i32 powmod(i64 a, i64 b, i32 m) {
+        i64 r = 1;
+        for ( ; b; b >>= 1) {
+            if (b & 1) r = r * a % m;
+            a = a * a % m;
+        }
+        return r;
+    }
+
     void fft(i32 m, i32 pr, bool inv) {
         i32 w = powmod(pr, m / n, m);
-        if (inv) { w = invmod(w, m); }
+        if (inv)
+            w = invmod(w, m);
 
         for (int i = 1, j = 0; i < n; ++i) {
             int k = n >> 1;
