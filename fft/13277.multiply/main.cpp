@@ -211,10 +211,11 @@ int main() {
         const i32 b = 1000000000;
         i32 c0 = 0, c1 = 0, c2 = 0;
         const i32 iu1p1 = Vector<i32>::invmod(p0, p1);
-        const i32 iu2p2 = Vector<i32>::invmod((i64)p0 * p1 % p2, p2);
+        const i32 iu2p2 = Vector<i32>::invmod(p0 * p1 % p2, p2);
         const i32 ibp0 = Vector<i32>::invmod(b, p0);
         const i32 ibp1 = Vector<i32>::invmod(b, p1);
         const i32 ibp2 = Vector<i32>::invmod(b, p2);
+
         for (int i = 0; i < n; ++i) {
             i32 r0 = v0.buf[i] + c0; if (r0 > p0) r0 -= p0;
             i32 r1 = v1.buf[i] + c1; if (r1 > p1) r1 -= p1;
