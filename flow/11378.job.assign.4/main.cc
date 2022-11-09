@@ -40,7 +40,7 @@ class Solver {
     for (int work = FirstWork(); work <= LastWork(); work++)
       Connect(work, kSink);
 
-    return MaxFlow();
+    return EdmondKarp();
   }
 
  private:
@@ -60,7 +60,7 @@ class Solver {
     capacities_[from][to] = capacity;
   }
 
-  int MaxFlow(int source = kSource, int sink = kSink) {
+  int EdmondKarp(int source = kSource, int sink = kSink) {
     int flow = 0;
 
     while (true) {
